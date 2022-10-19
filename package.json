@@ -1,0 +1,21 @@
+{
+  "name": "webp-auto-transform",
+  "version": "1.0.0",
+  "description": "图片自动转换webp格式的node工具",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "release": "standard-version"
+  },
+  "author": "zhuwei-ones",
+  "license": "ISC",
+  "devDependencies": {
+    "commitizen": "^4.2.5",
+    "cwebp-bin": "^8.0.0",
+    "standard-version": "^9.5.0"
+  },
+  "dependencies": {
+    "chokidar": "^3.5.3",
+    "fs-extra": "^10.1.0"
+  }
+}
