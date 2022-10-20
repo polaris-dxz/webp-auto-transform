@@ -1,3 +1,3 @@
 function createWebp() {}
 
-module.exports = createWebp;
+export default createWebp;

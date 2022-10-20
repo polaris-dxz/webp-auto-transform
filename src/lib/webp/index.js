@@ -1,6 +1,6 @@
-const EventEmitter = require("eventemitter3");
-const createWebp = require("./createWebp");
-const removeWebp = require("./removeWebp");
+import EventEmitter from "eventemitter3";
+import createWebp from "./createWebp";
+import removeWebp from "./removeWebp";
 
 const Event = new EventEmitter();
 

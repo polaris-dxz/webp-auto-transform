@@ -1,2 +1,3 @@
 function removeWebp() {}
-module.exports = removeWebp;
+
+export default removeWebp;

@@ -1,5 +1,5 @@
-const chokidar = require("chokidar");
-const { isDir } = require("./utils");
+import { isDir } from "./utils";
+import chokidar from "chokidar";
 
 const regIsImg = /\.(png|jpg|jpeg|bmp|gif)$/i;
 
@@ -18,4 +18,4 @@ function watchFile(path) {
     });
 }
 
-module.exports = watchFile;
+export default watchFile;

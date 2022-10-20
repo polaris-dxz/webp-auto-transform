@@ -1,10 +1,10 @@
-const { getCurrentOptions } = require("./lib/utils");
-const watch = require("./lib/watch");
+import { getCurrentOptions } from './lib/utils';
+import watchFile from './lib/watch';
 
 function WebpAutoTransform(options) {
   const currentOptions = getCurrentOptions(options);
 
-  watch("./assets/");
+  watchFile();
 }
 
-module.exports = WebpAutoTransform;
+export default WebpAutoTransform;
