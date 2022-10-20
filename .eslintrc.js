@@ -11,6 +11,9 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module'
   },
-  rules: {},
-  root: 'src'
+  rules: {
+    'no-continue': 'off',
+    'no-console': 'off'
+  },
+  ignorePatterns: ['__tests__/**', 'dist/**', 'demo/**', 'example/**']
 };
