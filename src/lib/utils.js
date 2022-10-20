@@ -1,5 +1,6 @@
-const fs = require("fs-extra");
-const chalk = require("chalk");
+import fs from "fs-extra";
+import path from "path";
+import chalk from "chalk";
 
 const originLog = console.log;
 console.log = function (...args) {
@@ -9,7 +10,7 @@ console.log = function (...args) {
   ]);
 };
 
-function isDir(path) {
+export function isDir(path) {
   try {
     return fs.statSync(path).isDirectory();
   } catch (error) {
@@ -17,9 +18,14 @@ function isDir(path) {
   }
 }
 
-function getDefaultOutputPath(entryPath) {}
+export function getDefaultOutputPath(entryPath) {
+  const lastDir = path.basename(entryPath);
 
-function verifyOptions(options = {}) {
+  const webpDir = `${lastDir}-webp`;
+  return entryPath.replace(lastDir, webpDir);
+}
+
+export function verifyOptions(options = {}) {
   const {
     entryPath,
     outputPath,
@@ -33,7 +39,7 @@ function verifyOptions(options = {}) {
     throw new Error("entryPath 不是一个有效的路径");
   }
 
-  if (typeof outputPath !== "string") {
+  if (outputPath && typeof outputPath !== "string") {
     throw new Error("outputPath 不是一个有效的路径");
   }
 
@@ -41,57 +47,45 @@ function verifyOptions(options = {}) {
     throw new Error("customList 必须是一个数组");
   }
 
-  customList.forEach((item) => {
-    if (typeof item !== "object") {
-      throw new Error("customList 子项不是有效值");
-    }
-  });
+  if (Array.isArray(customList)) {
+    customList.forEach((item) => {
+      if (typeof item !== "object") {
+        throw new Error("customList 子项不是有效值");
+      }
+    });
+  }
 
   if (
-    typeof quality !== "number" ||
+    (quality && typeof quality !== "number") ||
     (typeof quality === "number" && (quality > 100 || quality < 0))
   ) {
     throw new Error("quality 必须是0-100");
   }
 
-  if (typeof biggerWebpDelete !== "boolean") {
+  if (biggerWebpDelete && typeof biggerWebpDelete !== "boolean") {
     throw new Error("biggerWebpDelete 只能是布尔值");
   }
 
-  if (typeof webpExistReplace !== "boolean") {
+  if (webpExistReplace && typeof webpExistReplace !== "boolean") {
     throw new Error("webpExistReplace 只能是布尔值");
   }
 }
 
-function setDefaultPluginOptions(options = {}) {
+export function setDefaultPluginOptions(options = {}) {
   const {
     entryPath,
     outputPath,
     quality,
-    customList,
+    customList = [],
     biggerWebpDelete,
     webpExistReplace,
   } = options;
 
-  if (typeof biggerWebpDelete !== "boolean") {
-    if (biggerWebpDelete) {
-      throw new Error("biggerWebpDelete 只能是布尔值");
-    } else {
-      cBiggerWebpDelete = true;
-    }
-  }
-
-  if (typeof webpExistReplace !== "boolean") {
-    if (webpExistReplace) {
-      throw new Error("webpExistReplace 只能是布尔值");
-    } else {
-      cWebpExistReplace = false;
-    }
-  }
-
   const currentCustomList = customList.filter((item) => {
     const { quality: q, path } = item;
     if (!path || q === quality) return false;
+
+    return true;
   });
 
   return {
@@ -99,12 +93,12 @@ function setDefaultPluginOptions(options = {}) {
     outputPath: outputPath || getDefaultOutputPath(entryPath),
     customList: currentCustomList,
     quality: quality || 75,
-    biggerWebpDelete: cBiggerWebpDelete ?? true,
-    webpExistReplace: cWebpExistReplace ?? false,
+    biggerWebpDelete: biggerWebpDelete ?? true,
+    webpExistReplace: webpExistReplace ?? false,
   };
 }
 
-function getCurrentOptions(options = {}) {
+export function getCurrentOptions(options = {}) {
   verifyOptions(options);
 
   const {
@@ -136,6 +130,11 @@ function getCurrentOptions(options = {}) {
   for (let opt in webpParamas) {
     const currentVal = webpParamas[opt];
 
+    // 忽略参数 o，输出path 已经在配置决定
+    if (opt === "o") {
+      continue;
+    }
+
     // 值为 false 忽略
     if (currentVal === false || currentVal === "false") {
       continue;
@@ -155,8 +154,3 @@ function getCurrentOptions(options = {}) {
     pluginOptions,
   };
 }
-
-module.exports = {
-  isDir,
-  getCurrentOptions,
-};
