@@ -1,8 +1,17 @@
-import EventEmitter from "eventemitter3";
-import createWebp from "./createWebp";
-import removeWebp from "./removeWebp";
+import EventEmitter from 'eventemitter3';
+import createWebp from './createWebp';
+import removeWebp from './removeWebp';
 
-const Event = new EventEmitter();
+export const CreateWebpEventName = 'create-webp';
+export const RemoveWebpEventName = 'remove-webp';
 
-Event.on("create-webp", createWebp);
-Event.on("remove-webp", removeWebp);
+function WebpInit(options) {
+  const event = new EventEmitter();
+
+  event.on(CreateWebpEventName, createWebp, { options });
+  event.on(RemoveWebpEventName, removeWebp, { options });
+
+  return event;
+}
+
+export default WebpInit;
