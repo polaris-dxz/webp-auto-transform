@@ -1,12 +1,19 @@
 import fs from 'fs-extra';
-import path from 'path';
+import path, { resolve } from 'path';
 import chalk from 'chalk';
+
+const CWD = process.cwd();
+const regIsImg = /\.(png|jpg|jpeg|bmp|gif)$/i;
 
 export function log(...args) {
   console.log(
     chalk.blue('[webp-auto-transform log]: '),
     ...args
   );
+}
+
+export function isValidImg(imgPath) {
+  return regIsImg.test(imgPath);
 }
 
 export function isDir(dirPath) {
@@ -17,9 +24,19 @@ export function isDir(dirPath) {
   }
 }
 
+export function getAbsolutePath(_path) {
+  return resolve(CWD, _path);
+}
+
+export function getOutputPathByEntry(originImgPath, { entryPath, outputPath }) {
+  return originImgPath.replace(entryPath, outputPath);
+}
+
 export function getWebpTransformPath(originImgPath, { entryPath, outputPath }) {
   const extname = path.extname(originImgPath);
-  const resultPath = originImgPath.replace(entryPath, outputPath).replace(new RegExp(`\\${extname}$`), '.webp');
+  let resultPath = getOutputPathByEntry(originImgPath, { entryPath, outputPath }).replace(new RegExp(`\\${extname}$`), '.webp');
+
+  resultPath = getAbsolutePath(resultPath);
   const dirPath = path.dirname(resultPath);
 
   fs.ensureDirSync(dirPath); // 确保路径存在
@@ -95,13 +112,17 @@ export function setDefaultPluginOptions(options = {}) {
   const currentCustomList = customList.filter((item) => {
     const { quality: q, path: itemPath } = item;
     if (!itemPath || q === quality) return false;
-
     return true;
-  });
+  }).map((item=>({
+    ...item,
+    path: getAbsolutePath(item.path)
+  })));
+
+  const enryAbPath = getAbsolutePath(entryPath);
 
   return {
-    entryPath,
-    outputPath: outputPath ?? getDefaultOutputPath(entryPath),
+    entryPath: enryAbPath,
+    outputPath: outputPath ? getAbsolutePath(outputPath) : getDefaultOutputPath(enryAbPath),
     customList: currentCustomList,
     quality: quality ?? 75,
     biggerWebpDelete: biggerWebpDelete ?? true,
@@ -109,6 +130,39 @@ export function setDefaultPluginOptions(options = {}) {
     quiet: quiet ?? true,
     ...rest
   };
+}
+
+export function getCwebpOptions(webpParamas) {
+  const cwebpOptions = [];
+  const list = Object.keys(webpParamas);
+
+  for (let index = 0; index < list.length; index += 1) {
+    let key = list[index];
+    const currentVal = webpParamas[key];
+
+    if (key === 'quality') {
+      key = 'q';
+    }
+
+    // 忽略参数 o，输出path 已经在配置决定
+    if (key === 'o') {
+      continue;
+    }
+
+    // 值为 false 忽略
+    if (currentVal === false || currentVal === 'false') {
+      continue;
+    }
+
+    cwebpOptions.push('-' + key);
+
+    // 值不是 true，压入选项的值
+    if (currentVal && currentVal !== true && currentVal !== 'true') {
+      cwebpOptions.push(currentVal);
+    }
+  }
+
+  return cwebpOptions;
 }
 
 export function getCurrentOptions(options = {}) {
@@ -136,39 +190,24 @@ export function getCurrentOptions(options = {}) {
   };
 
   const webpParamas = {
-    q: quality,
+    quality,
     quiet: quiet,
     ...rest
   };
-  const cwebpOptions = []; // cwebp 用的参数
-
-  const list = Object.keys(webpParamas);
-
-  for (let index = 0; index < list.length; index += 1) {
-    const key = list[index];
-    const currentVal = webpParamas[key];
-
-    // 忽略参数 o，输出path 已经在配置决定
-    if (key === 'o') {
-      continue;
-    }
-
-    // 值为 false 忽略
-    if (currentVal === false || currentVal === 'false') {
-      continue;
-    }
-
-    // 选项
-    cwebpOptions.push('-' + key);
-
-    // 值不是 true，压入选项的值
-    if (currentVal && currentVal !== true && currentVal !== 'true') {
-      cwebpOptions.push(currentVal);
-    }
-  }
 
   return {
-    cwebpOptions,
+    cwebpOptions: webpParamas,
     pluginOptions
   };
+}
+
+export function getImgCustomCwebpConfig(currentPath, customList) {
+  for (let index = 0; index < customList.length; index += 1) {
+    const item = customList[index];
+    const { path: itemPath, ...rest } = item;
+    if (currentPath === itemPath) {
+      return rest;
+    }
+  }
+  return {};
 }
