@@ -10,17 +10,11 @@ export function getLogPrefix(name) {
 }
 
 export function log(...args) {
-  console.log(
-    chalk.blue(getLogPrefix('log')),
-    ...args
-  );
+  console.log(chalk.blue(getLogPrefix('log')), ...args);
 }
 
 export function errLog(...args) {
-  console.log(
-    chalk.blue(getLogPrefix('error')),
-    ...args
-  );
+  console.log(chalk.blue(getLogPrefix('error')), ...args);
 }
 
 export function getSizeDifference(imgPath, webpPath) {
@@ -54,7 +48,10 @@ export function getOutputPathByEntry(originImgPath, { entryPath, outputPath }) {
 
 export function getWebpTransformPath(originImgPath, { entryPath, outputPath }) {
   const extname = path.extname(originImgPath);
-  let resultPath = getOutputPathByEntry(originImgPath, { entryPath, outputPath }).replace(new RegExp(`\\${extname}$`), '.webp');
+  let resultPath = getOutputPathByEntry(originImgPath, {
+    entryPath,
+    outputPath
+  }).replace(new RegExp(`\\${extname}$`), '.webp');
 
   resultPath = getAbsolutePath(resultPath);
   const dirPath = path.dirname(resultPath);
@@ -129,20 +126,24 @@ export function setDefaultPluginOptions(options = {}) {
     ...rest
   } = options;
 
-  const currentCustomList = customList.filter((item) => {
-    const { quality: q, path: itemPath } = item;
-    if (!itemPath || q === quality) return false;
-    return true;
-  }).map((item=>({
-    ...item,
-    path: getAbsolutePath(item.path)
-  })));
+  const currentCustomList = customList
+    .filter((item) => {
+      const { quality: q, path: itemPath } = item;
+      if (!itemPath || q === quality) return false;
+      return true;
+    })
+    .map((item) => ({
+      ...item,
+      path: getAbsolutePath(item.path)
+    }));
 
   const enryAbPath = getAbsolutePath(entryPath);
 
   return {
     entryPath: enryAbPath,
-    outputPath: outputPath ? getAbsolutePath(outputPath) : getDefaultOutputPath(enryAbPath),
+    outputPath: outputPath
+      ? getAbsolutePath(outputPath)
+      : getDefaultOutputPath(enryAbPath),
     customList: currentCustomList,
     quality: quality ?? 75,
     biggerWebpDelete: biggerWebpDelete ?? true,
@@ -156,7 +157,7 @@ export function getCwebpOptions(webpParamas) {
   const cwebpOptions = [];
   const list = Object.keys(webpParamas);
 
-  for (let index = 0; index < list.length; index += 1) {
+  for (let index = 0; index < list?.length; index += 1) {
     let key = list[index];
     const currentVal = webpParamas[key];
 
@@ -222,7 +223,7 @@ export function getCurrentOptions(options = {}) {
 }
 
 export function getImgCustomCwebpConfig(currentPath, customList) {
-  for (let index = 0; index < customList.length; index += 1) {
+  for (let index = 0; index < customList?.length; index += 1) {
     const item = customList[index];
     const { path: itemPath, ...rest } = item;
     if (currentPath === itemPath) {
