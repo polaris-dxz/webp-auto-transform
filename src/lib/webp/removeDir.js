@@ -1,4 +1,4 @@
-import { removeSync } from 'fs-extra';
+import { pathExistsSync, removeSync } from 'fs-extra';
 import { getOutputPathByEntry, log } from '../utils';
 
 function removeDir(dirPath) {
@@ -6,9 +6,11 @@ function removeDir(dirPath) {
 
   const webpDirPath = getOutputPathByEntry(dirPath, { entryPath, outputPath });
 
-  removeSync(webpDirPath);
+  if (pathExistsSync(webpDirPath)) {
+    removeSync(webpDirPath);
 
-  log(`${dirPath} remove`);
+    log(`${dirPath} remove`);
+  }
 }
 
 export default removeDir;
