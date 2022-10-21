@@ -20,6 +20,9 @@ function watchFile(options) {
       }
       event.emit(RemoveWebpEventName, path);
     })
+    .on('unlinkDir', (path) => {
+      event.emit(RemoveDirEventName, path);
+    })
     .on('error', (e) => {
       log(`监听发生了错误 ${e.message}`);
     });
