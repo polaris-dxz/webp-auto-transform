@@ -1,5 +1,5 @@
 import createWebp from "../src/lib/webp/createWebp";
-import fs from "fs-extra";
+import fs, { removeSync } from "fs-extra";
 import removeWebp from "../src/lib/webp/removeWebp";
 import path from "path";
 import { getAbsolutePath } from "../src/lib/utils";
@@ -12,11 +12,12 @@ const currentCwd = process.cwd();
 const entryAbPath = path.resolve(currentCwd, entryPath);
 const outputAbPath = path.resolve(currentCwd, outputPath);
 
-const img = path.resolve(entryAbPath, "mail_contact_us.png");
-const webp = path.resolve(outputAbPath, "mail_contact_us.webp");
+const img = path.resolve(entryAbPath, "test.png");
+const imgBig = path.resolve(entryAbPath, "big.png");
 
-console.log("img",img);
-console.log("webp",webp);
+const webp = path.resolve(outputAbPath, "test.webp");
+const webpBig= path.resolve(outputAbPath, "big.webp");
+
 
 fs.ensureDirSync(outputAbPath);
 
@@ -39,7 +40,18 @@ const contextWithCwebParams = {
   },
 };
 
-test("Test webp ", () => {
+test("Test Create Webp ", async() => {
+
+  fs.removeSync(webp);
+
+  createWebp.call(context, img);
+
+  expect(fs.existsSync(webp)).toBe(true);
+
+});
+
+test("Test Remove Webp ", async() => {
+
   fs.removeSync(webp);
 
   createWebp.call(context, img);
@@ -49,6 +61,37 @@ test("Test webp ", () => {
   removeWebp.call(context, img);
 
   expect(fs.existsSync(webp)).toBe(false);
+
+});
+
+test("Test Keep Webp ", async() => {
+
+  fs.removeSync(webp);
+
+  createWebp.call(context, img);
+
+  expect(fs.existsSync(webp)).toBe(true);
+
+  expect(createWebp.call(context, img)).toBe(undefined);
+
+});
+
+test('Test Remove Bigger Webp ',async () => {
+
+  createWebp.call({
+    ...context,
+    options:{
+      ...context.options,
+      pluginOptions:{
+        ...context.options.pluginOptions,
+        biggerWebpDelete:true
+      }
+    }
+  }, imgBig);
+
+  await new Promise((res)=>setTimeout(()=>{res()},500))
+
+  expect(fs.existsSync(webpBig)).toBe(false);
 });
 
 test("Test webp defined cwebp params", () => {
