@@ -1,15 +1,35 @@
-import fs from 'fs-extra';
+import fs, { statSync } from 'fs-extra';
 import path, { resolve } from 'path';
 import chalk from 'chalk';
 
 const CWD = process.cwd();
 const regIsImg = /\.(png|jpg|jpeg|bmp|gif)$/i;
 
+export function getLogPrefix(name) {
+  return `[webp-auto-transform ${name}]: `;
+}
+
 export function log(...args) {
   console.log(
-    chalk.blue('[webp-auto-transform log]: '),
+    chalk.blue(getLogPrefix('log')),
     ...args
   );
+}
+
+export function errLog(...args) {
+  console.log(
+    chalk.blue(getLogPrefix('error')),
+    ...args
+  );
+}
+
+export function getSizeDifference(imgPath, webpPath) {
+  const statsOrigin = statSync(imgPath);
+  const statsWebp = statSync(webpPath);
+
+  const diff = (statsWebp.size - statsOrigin.size) / 1024;
+
+  return diff.toFixed(2);
 }
 
 export function isValidImg(imgPath) {

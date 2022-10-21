@@ -1,10 +1,14 @@
+import chalk from 'chalk';
 import { execFileSync } from 'child_process';
 import cwebp from 'cwebp-bin';
-import { pathExistsSync, removeSync, statSync } from 'fs-extra';
+import { pathExistsSync, removeSync } from 'fs-extra';
 import { basename } from 'path';
 import {
+  errLog,
   getCwebpOptions,
   getImgCustomCwebpConfig,
+  getLogPrefix,
+  getSizeDifference,
   getWebpTransformPath,
   log
 } from '../utils';
@@ -39,23 +43,23 @@ function createWebp(imgPath) {
   try {
     execFileSync(cwebp, [...currentCwebpOptions, imgPath, '-o', webpPath]);
   } catch (error) {
-    log(`${imgPath} 转换 webp 失败, 检查配置是否出错->`, cwebpOptions);
+    errLog(`${imgPath} 转换 webp 失败, 检查配置是否出错->`, cwebpOptions);
   }
 
-  const statsOrigin = statSync(imgPath);
-  const statsWebp = statSync(webpPath);
+  const diffSize = getSizeDifference(imgPath, webpPath);
+  const webpName = basename(webpPath);
 
   // 如果原图更小，那么直接使用原图
-  if (statsOrigin.size < statsWebp.size && biggerWebpDelete) {
+  if (diffSize > 0 && biggerWebpDelete) {
     removeSync(webpPath);
-    log(
-      '删除更大的webp-->',
-      webpPath,
-      (statsWebp.size - statsOrigin.size) / 1024
+    console.log(
+      chalk.red(getLogPrefix('delete webp')),
+      webpName,
+      `转换体积大了 ${ diffSize }KB`
     );
+  } else {
+    log(`${webpName} created`);
   }
-
-  log(`${basename(webpPath)} create`);
 }
 
 export default createWebp;
