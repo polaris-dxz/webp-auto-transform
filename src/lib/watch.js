@@ -1,29 +1,27 @@
-import { isDir, log } from './utils';
+import { isValidImg, log } from './utils';
 import chokidar from 'chokidar';
-import WebpInit, { CreateWebpEventName, RemoveWebpEventName } from './webp';
-
-const regIsImg = /\.(png|jpg|jpeg|bmp|gif)$/i;
+import WebpInit, { CreateWebpEventName, RemoveDirEventName, RemoveWebpEventName } from './webp';
 
 function watchFile(options) {
   const { pluginOptions: { entryPath } } = options;
   const event = WebpInit(options);
 
   chokidar
-    .watch(entryPath, {
-      ignored: (path) => {
-        return !isDir(path) && !regIsImg.test(path);
-      }
-    })
+    .watch(entryPath)
     .on('add', (path) => {
+      if (!isValidImg(path)) {
+        return;
+      }
       event.emit(CreateWebpEventName, path);
-      log(`${path} added`);
     })
     .on('unlink', (path) => {
+      if (!isValidImg(path)) {
+        return;
+      }
       event.emit(RemoveWebpEventName, path);
-      log(` ${path} removed`);
     })
     .on('error', (e) => {
-      log(`监听错误 ${e.message}`);
+      log(`监听发生了错误 ${e.message}`);
     });
 }
 
