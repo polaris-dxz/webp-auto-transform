@@ -68,8 +68,6 @@ beforeEach(()=>{
 afterAll(()=>{
     removeSync(testImagePath)
     removeSync(testImageWebpPath)
-
-    watcher.close()
 })
 
 function sleep(time = 200){
