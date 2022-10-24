@@ -1,17 +1,17 @@
 {
   "name": "webp-auto-transform",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "图片自动转换webp格式的node工具",
   "main": "dist/index.js",
   "scripts": {
     "test": "jest --collect-coverage",
     "clean": "rimraf dist",
-    "release": "standard-version",
+    "release": "npm run test & standard-version",
     "build": "babel src --out-dir dist",
     "watch": "npm run build -- -w",
     "prepublishOnly": "npm run clean & npm run test & npm run build",
     "lint": "eslint src",
-    "verfify":"lint-staged",
+    "verfify": "lint-staged",
     "prepare": "husky install"
   },
   "author": "zhuwei-ones",
@@ -32,7 +32,6 @@
       "git add"
     ]
   },
-
   "devDependencies": {
     "@babel/cli": "^7.19.3",
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.18.6",
