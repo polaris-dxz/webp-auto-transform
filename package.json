@@ -64,6 +64,8 @@
     "chokidar": "^3.5.3",
     "cwebp-bin": "^6.1.2",
     "eventemitter3": "^4.0.7",
-    "fs-extra": "^10.1.0"
+    "fs-extra": "^10.1.0",
+    "glob": "^8.0.3",
+    "progress": "^2.0.3"
   }
 }
