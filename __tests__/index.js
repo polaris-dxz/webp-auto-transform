@@ -1,4 +1,4 @@
-import {   copyFileSync,  emptyDirSync,   ensureDirSync, moveSync, pathExistsSync, removeSync, renameSync } from "fs-extra";
+import {   copyFileSync,  emptyDirSync,   ensureDirSync, moveSync, pathExistsSync, readdirSync, readSync, removeSync, renameSync } from "fs-extra";
 
 import {resolve} from 'path'
 import WebpAutoTransform from "../src";
@@ -131,6 +131,11 @@ describe("Test Remove Webp", ()=>{
 
         await sleep()
 
+       const file =  readdirSync(forTestWebpDir)
+
+       console.log("file",file,forTestWebpDir);
+       console.log("pathExistsSync(forTestWebpDir)",pathExistsSync(forTestWebpDir));
+
         expect(pathExistsSync(forTestWebpDir)).toBe(false)
     
     });
@@ -169,6 +174,13 @@ describe("Test Move Webp",()=>{
         moveSync(TestImg.test,TestDirImg.test)
 
         await sleep()
+
+       const file =  readdirSync(forTestWebpDir)
+
+       console.log("file move",file);
+
+       console.log("file",file,TestDirImg.testWebp);
+       console.log("pathExistsSync(TestDirImg.testWebp)",pathExistsSync(TestDirImg.testWebp));
         
         expect(pathExistsSync(TestDirImg.testWebp)).toBe(true)
 
