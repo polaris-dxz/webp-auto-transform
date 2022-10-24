@@ -70,7 +70,7 @@ afterAll(()=>{
     removeSync(testImageWebpPath)
 })
 
-function sleep(time = 200){
+function sleep(time = 500){
     return new Promise((res)=>setTimeout(()=>res(), time));
 }
 
