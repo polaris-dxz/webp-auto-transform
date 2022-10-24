@@ -5,8 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "jest",
-    "coverage": "jest --collect-coverage",
-    "coverage-testcase": "jest -t 'Test Remove Webp Directory'",
+    "coverage": " jest --coverage --coverageReporters='json-summary'",
     "clean": "rimraf dist",
     "release": "npm run test & standard-version",
     "build": "babel src --out-dir dist",
