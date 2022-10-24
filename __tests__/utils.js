@@ -45,8 +45,12 @@ const resultOptions = {
 };
 
 const errorList = {
-  entryPath: new Error("entryPath 不是一个有效的路径"),
-  outputPath: new Error("outputPath 不是一个有效的路径"),
+  entryPath: (val)=>{
+    return new Error(`entryPath 不是一个有效的路径，收到--->${val}`)
+  },
+  outputErr: (val)=>{
+    return new Error(`outputPath 不是一个有效的路径，收到--->${val}`)
+  },
   customList: new Error("customList 必须是一个数组"),
   customItem: new Error("customList 子项不是有效值"),
   quality: new Error("quality 必须是0-100"),
@@ -78,20 +82,20 @@ test("Test WebpPath", () => {
 test("Test Error Options", () => {
   expect(() => {
     verifyOptions();
-  }).toThrow(errorList.entryPath);
+  }).toThrow(errorList.entryPath());
 
   expect(() => {
     verifyOptions({
       entryPath: true,
     });
-  }).toThrow(errorList.entryPath);
+  }).toThrow(errorList.entryPath(true));
 
   expect(() => {
     verifyOptions({
       ...defaultEntry,
       outputPath: true,
     });
-  }).toThrow(errorList.outputErr);
+  }).toThrow(errorList.outputErr(true));
 
   expect(() => {
     verifyOptions({
@@ -217,7 +221,7 @@ test("Test Default Options", () => {
 test("Test Options Format", () => {
   expect(() => {
     getCurrentOptions();
-  }).toThrow(errorList.entryPath);
+  }).toThrow(errorList.entryPath());
 
   const options = {
     ...defaultOptions,
