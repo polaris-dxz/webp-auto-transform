@@ -79,11 +79,11 @@ export function verifyOptions(options = {}) {
   } = options;
 
   if (!isDir(entryPath)) {
-    throw new Error('entryPath 不是一个有效的路径');
+    throw new Error(`entryPath 不是一个有效的路径，收到--->${entryPath}`);
   }
 
   if (outputPath && typeof outputPath !== 'string') {
-    throw new Error('outputPath 不是一个有效的路径');
+    throw new Error(`outputPath 不是一个有效的路径，收到--->${outputPath}`);
   }
 
   if (customList && !Array.isArray(customList)) {
