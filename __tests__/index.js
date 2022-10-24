@@ -66,7 +66,7 @@ afterAll(()=>{
     removeSync(testImageWebpPath)
 })
 
-function sleep(time = 500){
+function sleep(time = 200){
     return new Promise((res)=>setTimeout(()=>res(), time));
 }
 
@@ -123,20 +123,11 @@ describe("Test Remove Webp", ()=>{
 
         expect(pathExistsSync(TestDirImg.testWebp)).toBe(true)
 
-
-        // watcher.on("unlinkDir",async ()=>{
-
-
-        // })
-
         removeSync(forTestDir)
 
         await sleep()
 
-        console.log("removeSync remove Webp Dir",forTestDir)
-    
         expect(pathExistsSync(forTestWebpDir)).toBe(false)
-
 
     });
 })
