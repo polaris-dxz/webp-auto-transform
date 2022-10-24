@@ -18,8 +18,6 @@ const demoWebp = `${outputPath}/xxxx.webp`;
 
 const CWD = process.cwd();
 
-const currentCwd = "/Users/Project/webp-auto-transform";
-
 const entryAbPath = path.resolve(CWD, entryPath);
 const outputAbPath = path.resolve(CWD, outputPath);
 const childAbPath = path.resolve(CWD, childPath);
@@ -223,8 +221,8 @@ test("Test Options Format", () => {
 
   const options = {
     ...defaultOptions,
-    entryPath: path.resolve(currentCwd, entryPath),
-    outputPath: path.resolve(currentCwd, outputPath),
+    entryPath: path.resolve(CWD, entryPath),
+    outputPath: path.resolve(CWD, outputPath),
   };
 
   expect(
