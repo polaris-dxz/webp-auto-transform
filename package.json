@@ -4,7 +4,8 @@
   "description": "图片自动转换webp格式的node工具",
   "main": "dist/index.js",
   "scripts": {
-    "test": "jest --collect-coverage",
+    "test": "jest",
+    "coverage": "jest --collect-coverage",
     "clean": "rimraf dist",
     "release": "npm run test & standard-version",
     "build": "babel src --out-dir dist",
