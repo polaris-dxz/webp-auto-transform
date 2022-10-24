@@ -40,7 +40,7 @@ function createWebp(imgPath, bar) {
     pathExistsSync(webpPath)
     && !webpExistReplace
   ) {
-    bar.tick();
+    bar?.tick?.();
     return;
   }
 
@@ -49,7 +49,7 @@ function createWebp(imgPath, bar) {
   } catch (error) {
     errLog(`${imgPath} 转换 webp 失败, 检查配置是否出错->`, cwebpOptions);
   } finally {
-    bar.tick();
+    bar?.tick?.();
   }
 
   const { diffSize, originSize, webpSize } = getSizeDifference(imgPath, webpPath);
