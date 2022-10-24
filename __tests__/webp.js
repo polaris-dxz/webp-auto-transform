@@ -1,5 +1,5 @@
 import createWebp from '../src/lib/webp/createWebp';
-import fs from 'fs-extra';
+import fs, { emptyDirSync, removeSync } from 'fs-extra';
 import removeWebp from '../src/lib/webp/removeWebp';
 import path from 'path';
 import { getAbsolutePath } from '../src/lib/utils';
@@ -70,7 +70,10 @@ describe('Test Webp', function () {
     expect(createWebp.call(context, img)).toBe(undefined);
   });
 
-  test('Test Remove Bigger Webp ', async () => {
+  test('Test Remove Bigger Webp', async () => {
+
+    emptyDirSync(outputAbPath)
+
     createWebp.call({
       ...context,
       options: {

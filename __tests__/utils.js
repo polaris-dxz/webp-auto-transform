@@ -36,6 +36,7 @@ const defaultOptions = {
   quality: 75,
   webpExistReplace: false,
   quiet: true,
+  detailLog:false
 };
 
 const resultOptions = {
