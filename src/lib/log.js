@@ -1,19 +1,23 @@
-import { debounce, humanFileSize } from './utils';
+import { debounce, humanFileSize, log } from './utils';
 
 let cache = {};
 
-const log = debounce(()=>{
+const logDetail = debounce(()=>{
   const currentImgList = cache;
-  cache = {};
 
   let totalSize = 0;
   let totalWebpSize = 0;
 
+  let biggerCounts = 0;
   const imgList = Object.keys(currentImgList);
 
   imgList.forEach(imgPath=>{
     const item = currentImgList[imgPath];
     const { originSize, webpSize } = item;
+
+    if (webpSize > originSize) {
+      biggerCounts += 1;
+    }
 
     totalSize += parseInt(originSize, 10);
     totalWebpSize += parseInt(webpSize, 10);
@@ -29,10 +33,16 @@ const log = debounce(()=>{
     总共压缩图片数: imgList.length,
     压缩率: `${Number(rate) * 100}%`
   });
+
+  log(`本次共有 ${biggerCounts} 张图片转成 webp 后会更大`);
 }, 1000);
 
 // 输出转换之后的对比
 export const logTransformDiff = (imgInfo)=>{
+  // 跑测试用例不需要打印
+  if (process.env.NODE_ENV === 'test') {
+    return;
+  }
   cache[imgInfo.originPath] = imgInfo;
-  log();
+  logDetail();
 };
