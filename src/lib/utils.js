@@ -1,9 +1,21 @@
 import fs, { statSync } from 'fs-extra';
 import path, { resolve } from 'path';
 import chalk from 'chalk';
+import { glob } from 'glob';
 
 const CWD = process.cwd();
-const regIsImg = /\.(png|jpg|jpeg|bmp|gif)$/i;
+
+export const imgExt = 'png|jpg|jpeg|bmp|gif';
+export const regIsImg = new RegExp(`\\.(${imgExt})$`, 'i');
+
+export function getDirAllFile(dirPath) {
+  const files = glob.sync(dirPath);
+  return files;
+}
+
+export function getWatchDirAllFiles(dirPath) {
+  return getDirAllFile(`${dirPath}/**/*.+(${imgExt})`);
+}
 
 export function getLogPrefix(name) {
   return `[webp-auto-transform ${name}]: `;
@@ -17,13 +29,53 @@ export function errLog(...args) {
   console.log(chalk.blue(getLogPrefix('error')), ...args);
 }
 
+export function debounce(cb, delay = 250) {
+  let timeout;
+
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      cb(...args);
+    }, delay);
+  };
+}
+
+export function humanFileSize(bytes, si = true, dp = 1) {
+  const thresh = si ? 1000 : 1024;
+
+  let newByte = bytes;
+
+  if (Math.abs(bytes) < thresh) {
+    return bytes + ' B';
+  }
+
+  const units = si
+    ? ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+    : ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+  let u = -1;
+  const r = 10 ** dp;
+
+  do {
+    newByte /= thresh;
+    u += 1;
+  } while (Math.round(Math.abs(newByte) * r) / r >= thresh && u < units.length - 1);
+
+  return newByte.toFixed(dp) + ' ' + units[u];
+}
+
 export function getSizeDifference(imgPath, webpPath) {
   const statsOrigin = statSync(imgPath);
   const statsWebp = statSync(webpPath);
 
-  const diff = (statsWebp.size - statsOrigin.size) / 1024;
+  const oSize = statsOrigin.size;
+  const rSize = statsWebp.size;
+  const diff = (rSize - oSize);
 
-  return diff.toFixed(2);
+  return {
+    originSize: oSize.toFixed(2),
+    webpSize: rSize.toFixed(2),
+    diffSize: diff.toFixed(2)
+  };
 }
 
 export function isValidImg(imgPath) {
@@ -75,7 +127,8 @@ export function verifyOptions(options = {}) {
     quality,
     customList,
     biggerWebpDelete,
-    webpExistReplace
+    webpExistReplace,
+    detailLog
   } = options;
 
   if (!isDir(entryPath)) {
@@ -112,6 +165,10 @@ export function verifyOptions(options = {}) {
   if (webpExistReplace && typeof webpExistReplace !== 'boolean') {
     throw new Error('webpExistReplace 只能是布尔值');
   }
+
+  if (detailLog && typeof detailLog !== 'boolean') {
+    throw new Error('detailLog 只能是布尔值');
+  }
 }
 
 export function setDefaultPluginOptions(options = {}) {
@@ -123,6 +180,7 @@ export function setDefaultPluginOptions(options = {}) {
     biggerWebpDelete,
     webpExistReplace,
     quiet,
+    detailLog,
     ...rest
   } = options;
 
@@ -149,6 +207,7 @@ export function setDefaultPluginOptions(options = {}) {
     biggerWebpDelete: biggerWebpDelete ?? true,
     webpExistReplace: webpExistReplace ?? false,
     quiet: quiet ?? true,
+    detailLog: detailLog ?? false,
     ...rest
   };
 }
@@ -197,6 +256,7 @@ export function getCurrentOptions(options = {}) {
     biggerWebpDelete,
     webpExistReplace,
     quiet,
+    detailLog,
     ...rest
   } = setDefaultPluginOptions(options);
 
@@ -207,7 +267,8 @@ export function getCurrentOptions(options = {}) {
     quality,
     customList,
     biggerWebpDelete,
-    webpExistReplace
+    webpExistReplace,
+    detailLog
   };
 
   const webpParamas = {
