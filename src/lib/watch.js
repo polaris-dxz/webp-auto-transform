@@ -6,7 +6,7 @@ function watchFile(options) {
   const { pluginOptions: { entryPath } } = options;
   const event = WebpInit(options);
 
-  chokidar
+  return chokidar
     .watch(entryPath)
     .on('add', (path) => {
       if (!isValidImg(path)) {

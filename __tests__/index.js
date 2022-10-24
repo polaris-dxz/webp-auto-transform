@@ -50,13 +50,9 @@ const TestDirImg = {
 }
 
 
-let watcher 
-
-beforeAll(()=>{
-    ensureDirSync(testImagePath)
-    watcher = WebpAutoTransform({
-        entryPath:"./__tests__/images"
-    })
+ensureDirSync(testImagePath)
+const watcher = WebpAutoTransform({
+    entryPath:"./__tests__/images"
 })
 
 beforeEach(()=>{
@@ -127,17 +123,21 @@ describe("Test Remove Webp", ()=>{
 
         expect(pathExistsSync(TestDirImg.testWebp)).toBe(true)
 
+
+        // watcher.on("unlinkDir",async ()=>{
+
+
+        // })
+
         removeSync(forTestDir)
 
         await sleep()
 
-       const file =  readdirSync(forTestWebpDir)
-
-       console.log("file",file,forTestWebpDir);
-       console.log("pathExistsSync(forTestWebpDir)",pathExistsSync(forTestWebpDir));
-
-        expect(pathExistsSync(forTestWebpDir)).toBe(false)
+        console.log("removeSync remove Webp Dir",forTestDir)
     
+        expect(pathExistsSync(forTestWebpDir)).toBe(false)
+
+
     });
 })
 
@@ -175,13 +175,6 @@ describe("Test Move Webp",()=>{
 
         await sleep()
 
-       const file =  readdirSync(forTestWebpDir)
-
-       console.log("file move",file);
-
-       console.log("file",file,TestDirImg.testWebp);
-       console.log("pathExistsSync(TestDirImg.testWebp)",pathExistsSync(TestDirImg.testWebp));
-        
         expect(pathExistsSync(TestDirImg.testWebp)).toBe(true)
 
         const moveDir = "for_test_move"

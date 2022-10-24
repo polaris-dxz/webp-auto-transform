@@ -9,6 +9,8 @@ function removeDir(dirPath) {
   if (pathExistsSync(webpDirPath)) {
     removeSync(webpDirPath);
 
+    console.log('开始删除目录--->', webpDirPath);
+
     log(`${dirPath} remove`);
   }
 }
