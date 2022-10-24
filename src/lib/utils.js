@@ -22,10 +22,18 @@ export function getLogPrefix(name) {
 }
 
 export function log(...args) {
+  // 跑测试用例不需要打印
+  if (process.env.NODE_ENV === 'test') {
+    return;
+  }
   console.log(chalk.blue(getLogPrefix('log')), ...args);
 }
 
 export function errLog(...args) {
+  // 跑测试用例不需要打印
+  if (process.env.NODE_ENV === 'test') {
+    return;
+  }
   console.log(chalk.blue(getLogPrefix('error')), ...args);
 }
 
