@@ -4,7 +4,7 @@ import watchFile from './lib/watch';
 function WebpAutoTransform(options) {
   const currentOptions = getCurrentOptions(options);
 
-  watchFile(currentOptions);
+  return watchFile(currentOptions);
 }
 
 export default WebpAutoTransform;
