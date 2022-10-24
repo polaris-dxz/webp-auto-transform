@@ -1,0 +1,6 @@
+__tests__
+.github
+.husky
+.vscode
+babel.config.json
+.eslintrc.js
