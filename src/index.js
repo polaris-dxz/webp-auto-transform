@@ -7,4 +7,4 @@ function WebpAutoTransform(options) {
   return watchFile(currentOptions);
 }
 
-export default WebpAutoTransform;
+module.exports = WebpAutoTransform;
