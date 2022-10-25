@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.3](https://github.com/zhuwei-ones/webp-auto-transform/compare/v1.1.2...v1.1.3) (2022-10-25)
+
+
+### Bug Fixes
+
+* webp 存在时也需要计算它的体积 ([f84d256](https://github.com/zhuwei-ones/webp-auto-transform/commit/f84d256f557d0fb6cb8e52a18cede71a453e92fd))
+
 ### [1.1.2](https://github.com/zhuwei-ones/webp-auto-transform/compare/v1.1.1...v1.1.2) (2022-10-24)
 
 ### [1.1.1](https://github.com/zhuwei-ones/webp-auto-transform/compare/v1.1.0...v1.1.1) (2022-10-24)
