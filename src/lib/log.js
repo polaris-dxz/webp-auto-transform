@@ -7,6 +7,7 @@ const logDetail = debounce(()=>{
 
   let totalSize = 0;
   let totalWebpSize = 0;
+  let remainSize = 0;
 
   let biggerCounts = 0;
   const imgList = Object.keys(currentImgList);
@@ -17,18 +18,22 @@ const logDetail = debounce(()=>{
 
     if (webpSize > originSize) {
       biggerCounts += 1;
+      remainSize += parseInt(originSize, 10);
+    } else {
+      // 只有更小的webp 才需要计算
+      totalWebpSize += parseInt(webpSize, 10);
     }
 
     totalSize += parseInt(originSize, 10);
-    totalWebpSize += parseInt(webpSize, 10);
   });
 
-  const diffSize = totalSize - totalWebpSize;
+  const diffSize = totalSize - remainSize - totalWebpSize;
   const rate = (diffSize / totalSize).toFixed(2);
 
   console.table({
     原图片包大小: humanFileSize(totalSize),
     webp图片包大小: humanFileSize(totalWebpSize),
+    未压缩图片包大小: humanFileSize(remainSize),
     总共减少体积: humanFileSize(diffSize),
     总共压缩图片数: imgList.length,
     压缩率: `${Number(rate) * 100}%`
