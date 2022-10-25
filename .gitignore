@@ -2,3 +2,5 @@ node_modules
 dist
 .idea
 demo
+coverage
+example/images-webp
