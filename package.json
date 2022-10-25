@@ -1,6 +1,6 @@
 {
   "name": "webp-auto-transform",
-  "version": "1.1.2",
+  "version": "1.1.6",
   "description": "图片自动转换webp格式的node工具",
   "main": "dist/index.js",
   "scripts": {

@@ -2,7 +2,7 @@
 
 const WebpAutoTransform = require("../dist/index")
 
-WebpAutoTransform.default({
+WebpAutoTransform({
     entryPath:"./images",
     outputPath:"./images-webp",
 
