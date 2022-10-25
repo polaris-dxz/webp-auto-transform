@@ -15,6 +15,17 @@ import {
   log
 } from '../utils';
 
+function logTransformDetail(imgPath, webpPath) {
+  const { originSize, webpSize } = getSizeDifference(imgPath, webpPath);
+
+  logTransformDiff({
+    originSize,
+    originPath: imgPath,
+    webpSize,
+    webpPath
+  });
+}
+
 function createWebp(imgPath, bar) {
   const { cwebpOptions, pluginOptions } = this.options;
 
@@ -41,6 +52,7 @@ function createWebp(imgPath, bar) {
     && !webpExistReplace
   ) {
     bar?.tick?.();
+    logTransformDetail(imgPath, webpPath);
     return;
   }
 
@@ -52,15 +64,10 @@ function createWebp(imgPath, bar) {
     bar?.tick?.();
   }
 
-  const { diffSize, originSize, webpSize } = getSizeDifference(imgPath, webpPath);
+  const { diffSize } = getSizeDifference(imgPath, webpPath);
   const webpName = basename(webpPath);
 
-  logTransformDiff({
-    originSize,
-    originPath: imgPath,
-    webpSize,
-    webpPath
-  });
+  logTransformDetail(imgPath, webpPath);
 
   // 如果原图更小，那么直接使用原图
   if (diffSize > 0 && biggerWebpDelete) {
